@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: EPCL
 // Engineer: theprocyon
@@ -19,7 +20,6 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module ltc2324_core(
     // system Interface
     input clk,
@@ -27,10 +27,10 @@ module ltc2324_core(
     input start,
 
     output valid,
-    output [15:0] ch1,
-    output [15:0] ch2,
-    output [15:0] ch3,
-    output [15:0] ch4,
+    output logic [15:0] ch1,
+    output logic [15:0] ch2,
+    output logic [15:0] ch3,
+    output logic [15:0] ch4,
     
     // LTC2324 Interface
     input CLKOUT,
@@ -50,7 +50,7 @@ typedef enum logic [2:0] {
     START,
     CONVERT,
     ACQUIRE, // Fire sck
-    DSCKHCNVH,
+    DSCKHCNVH
 } state_t;
 
 state_t state, next_state;
@@ -133,5 +133,6 @@ always_ff @(posedge CLKOUT or negedge rst_n) begin : SDO_Shift_Register
             ch4 <= {ch4[14:0], SDO4};
         end
     end
+end
 
 endmodule
