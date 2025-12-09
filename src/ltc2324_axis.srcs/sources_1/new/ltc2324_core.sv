@@ -43,8 +43,6 @@ module ltc2324_core(
 
     );
 
-
-
 // ====== State Machine  ======
 
 typedef enum logic [2:0] {
@@ -79,13 +77,12 @@ always_ff @(posedge clk or negedge rst_n) begin : State_Register // State Flipfl
     end
 end
 
-
 always_comb begin : Next_State_Logic // Next State Logic
     next_state = state;
     unique case (state)
         IDLE: if (start) next_state = START;
         START: if (tcnvh_clk_cnt == TCNVH_CLK_MAX) next_state = CONVERT;
-        CONVERT: if (tconv_clk_cnt == TCONV_CLhhK_MAX) next_state = ACQUIRE;
+        CONVERT: if (tconv_clk_cnt == TCONV_CLK_MAX) next_state = ACQUIRE;
         ACQUIRE: if (tsck_clk_cnt == TSCK_CLK_MAX) next_state = DSCKHCNVH;
         DSCKHCNVH: if (tdsckhcnvh_clk_cnt == TDSCKHCNVH_CLK_MAX) next_state = IDLE;
     endcase
@@ -98,33 +95,27 @@ always_ff @(posedge clk or negedge rst_n) begin : State_Counters // state ounter
         tsck_clk_cnt <= 0;
         tdsckhcnvh_clk_cnt <= 0;
     end else begin
-        if (state == START)
-            tcnvh_clk_cnt <= tcnvh_clk_cnt + 1;
-        else
-            tcnvh_clk_cnt <= 0;
+        if (state == START)     tcnvh_clk_cnt <= tcnvh_clk_cnt + 1;
+        else                    tcnvh_clk_cnt <= 0;
 
-        if (state == CONVERT)
-            tconv_clk_cnt <= tconv_clk_cnt + 1;
-        else
-            tconv_clk_cnt <= 0;
+        if (state == CONVERT)   tconv_clk_cnt <= tconv_clk_cnt + 1;
+        else                    tconv_clk_cnt <= 0;
+            
+        if (state == ACQUIRE)   tsck_clk_cnt <= tsck_clk_cnt + 1;
+        else                    tsck_clk_cnt <= 0;
 
-        if (state == ACQUIRE)
-            tsck_clk_cnt <= tsck_clk_cnt + 1;
-        else
-            tsck_clk_cnt <= 0;
-
-        if (state == DSCKHCNVH)
-            tdsckhcnvh_clk_cnt <= tdsckhcnvh_clk_cnt + 1;
-        else
-            tdsckhcnvh_clk_cnt <= 0;
+        if (state == DSCKHCNVH) tdsckhcnvh_clk_cnt <= tdsckhcnvh_clk_cnt + 1;
+        else                    tdsckhcnvh_clk_cnt <= 0;    
     end
 end
 
 // ====== Output assignment ======
-assign nCNV = !(state == START);
+assign nCNV = state == START;
 assign SCK = (state == ACQUIRE) ? clk : 1'b0;
-assign valid = tsck_clk_cnt == TSCK_CLK_MAX;
 
+// Although LTC2324 datasheet specifies tDSCKHCNVH as 0ns, the DSCKHCNVH state is added to address CLK-CLKOUT round trip delay to ensure acquisition.
+
+assign valid = (state == DSCKHCNVH) && (tdsckhcnvh_clk_cnt == TDSCKHCNVH_CLK_MAX);
 
 // ====== receive data from SDO pins ======
 
@@ -135,7 +126,7 @@ always_ff @(posedge CLKOUT or negedge rst_n) begin : SDO_Shift_Register
         ch3 <= 16'd0;
         ch4 <= 16'd0;
     end else begin
-        if (state == ACQUIRE) begin
+        if (state == ACQUIRE || state == DSCKHCNVH) begin
             ch1 <= {ch1[14:0], SDO1};
             ch2 <= {ch2[14:0], SDO2};
             ch3 <= {ch3[14:0], SDO3};
