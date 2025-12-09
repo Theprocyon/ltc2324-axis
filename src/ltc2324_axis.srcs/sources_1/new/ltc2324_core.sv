@@ -57,6 +57,8 @@ logic [3:0] tdsckhcnvh_clk_cnt;
 localparam logic [3:0] TDSCKHCNVH_CLK_MAX = 10;
 
 
+// ====== State Machine START ======
+
 typedef enum logic [2:0] {
     IDLE,
     START,
@@ -67,8 +69,7 @@ typedef enum logic [2:0] {
 
 state_t state, next_state;
 
-// State Transition
-always_ff @(posedge clk or negedge rst_n) begin
+always_ff @(posedge clk or negedge rst_n) begin : State_Register // State Flipflop
     if (!rst_n) begin
         state <= IDLE;
     end else begin
@@ -77,27 +78,44 @@ always_ff @(posedge clk or negedge rst_n) begin
 end
 
 
-always_comb begin
+always_comb begin : Next_State_Logic // Next State Logic
     next_state = state;
     unique case (state)
-        IDLE: begin
-            if (start) begin
-                next_state = START;
-            end
-        end
-        START: begin
-            next_state = CONVERT;
-        end
-        CONVERT: begin
-            next_state = ACQUIRE;
-        end
-        ACQUIRE: begin
-            next_state = DELAY;
-        end
-        DSCKHCNVH: begin
-            next_state = IDLE;
-        end
+        IDLE: if (start) next_state = START;
+        START: if (tcnvh_clk_cnt == TCNVH_CLK_MAX) next_state = CONVERT;
+        CONVERT: if (tconv_clk_cnt == TCONV_CLhhK_MAX) next_state = ACQUIRE;
+        ACQUIRE: if (tsck_clk_cnt == TSCK_CLK_MAX) next_state = DSCKHCNVH;
+        DSCKHCNVH: if (tdsckhcnvh_clk_cnt == TDSCKHCNVH_CLK_MAX) next_state = IDLE;
     endcase
+end
 
+always_ff @(posedge clk or negedge rst_n) begin : Timing_Counters // state ounters
+    if (!rst_n) begin
+        tcnvh_clk_cnt <= 0;
+        tconv_clk_cnt <= 0;
+        tsck_clk_cnt <= 0;
+        tdsckhcnvh_clk_cnt <= 0;
+    end else begin
+        if (state == START)
+            tcnvh_clk_cnt <= tcnvh_clk_cnt + 1;
+        else
+            tcnvh_clk_cnt <= 0;
 
+        if (state == CONVERT)
+            tconv_clk_cnt <= tconv_clk_cnt + 1;
+        else
+            tconv_clk_cnt <= 0;
+
+        if (state == ACQUIRE)
+            tsck_clk_cnt <= tsck_clk_cnt + 1;
+        else
+            tsck_clk_cnt <= 0;
+
+        if (state == DSCKHCNVH)
+            tdsckhcnvh_clk_cnt <= tdsckhcnvh_clk_cnt + 1;
+        else
+            tdsckhcnvh_clk_cnt <= 0;
+    end
+end
+// ====== State Machine END ======
 endmodule
