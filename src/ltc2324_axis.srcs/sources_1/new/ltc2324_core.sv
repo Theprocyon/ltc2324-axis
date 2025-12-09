@@ -43,7 +43,21 @@ module ltc2324_core(
 
     );
 
-//internal counters for timing control
+
+
+// ====== State Machine  ======
+
+typedef enum logic [2:0] {
+    IDLE,
+    START,
+    CONVERT,
+    ACQUIRE, // Fire sck
+    DSCKHCNVH,
+} state_t;
+
+state_t state, next_state;
+
+//state counters for timing control
 logic [1:0] tcnvh_clk_cnt;
 localparam logic [1:0] TCNVH_CLK_MAX = 3;
 
@@ -56,18 +70,6 @@ localparam logic [3:0] TSCK_CLK_MAX = 16 - 1;
 logic [3:0] tdsckhcnvh_clk_cnt;
 localparam logic [3:0] TDSCKHCNVH_CLK_MAX = 10;
 
-
-// ====== State Machine START ======
-
-typedef enum logic [2:0] {
-    IDLE,
-    START,
-    CONVERT,
-    ACQUIRE, // Fire sck
-    DSCKHCNVH,
-} state_t;
-
-state_t state, next_state;
 
 always_ff @(posedge clk or negedge rst_n) begin : State_Register // State Flipflop
     if (!rst_n) begin
@@ -89,7 +91,7 @@ always_comb begin : Next_State_Logic // Next State Logic
     endcase
 end
 
-always_ff @(posedge clk or negedge rst_n) begin : Timing_Counters // state ounters
+always_ff @(posedge clk or negedge rst_n) begin : State_Counters // state ounters
     if (!rst_n) begin
         tcnvh_clk_cnt <= 0;
         tconv_clk_cnt <= 0;
@@ -117,5 +119,28 @@ always_ff @(posedge clk or negedge rst_n) begin : Timing_Counters // state ounte
             tdsckhcnvh_clk_cnt <= 0;
     end
 end
-// ====== State Machine END ======
+
+// ====== Output assignment ======
+assign nCNV = !(state == START);
+assign SCK = (state == ACQUIRE) ? clk : 1'b0;
+assign valid = tsck_clk_cnt == TSCK_CLK_MAX;
+
+
+// ====== receive data from SDO pins ======
+
+always_ff @(posedge CLKOUT or negedge rst_n) begin : SDO_Shift_Register
+    if (!rst_n) begin
+        ch1 <= 16'd0;
+        ch2 <= 16'd0;
+        ch3 <= 16'd0;
+        ch4 <= 16'd0;
+    end else begin
+        if (state == ACQUIRE) begin
+            ch1 <= {ch1[14:0], SDO1};
+            ch2 <= {ch2[14:0], SDO2};
+            ch3 <= {ch3[14:0], SDO3};
+            ch4 <= {ch4[14:0], SDO4};
+        end
+    end
+
 endmodule
