@@ -7,3 +7,7 @@
 */*.jou
 */*.log
 */.Xil/*
+*.wdb
+*.vcd
+*.fsdb
+*/xsim.dir/*

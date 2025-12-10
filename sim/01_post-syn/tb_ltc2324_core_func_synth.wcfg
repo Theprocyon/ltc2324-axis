@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_ltc2324_core_func_synth.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_ltc2324_core" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="817.264 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,781.265 ns"></ZoomEndTime>
+      <Cursor1Time time="859.703 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="312"></NameColumnWidth>
+      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="21" />
+   <wvobject fp_name="/tb_ltc2324_core/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/ch1" type="array">
+      <obj_property name="ElementShortName">ch1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ch1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/ch2" type="array">
+      <obj_property name="ElementShortName">ch2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ch2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/ch3" type="array">
+      <obj_property name="ElementShortName">ch3[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ch3[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/ch4" type="array">
+      <obj_property name="ElementShortName">ch4[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ch4[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/CLKOUT" type="logic">
+      <obj_property name="ElementShortName">CLKOUT</obj_property>
+      <obj_property name="ObjectShortName">CLKOUT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/SDO1" type="logic">
+      <obj_property name="ElementShortName">SDO1</obj_property>
+      <obj_property name="ObjectShortName">SDO1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/SDO2" type="logic">
+      <obj_property name="ElementShortName">SDO2</obj_property>
+      <obj_property name="ObjectShortName">SDO2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/SDO3" type="logic">
+      <obj_property name="ElementShortName">SDO3</obj_property>
+      <obj_property name="ObjectShortName">SDO3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/SDO4" type="logic">
+      <obj_property name="ElementShortName">SDO4</obj_property>
+      <obj_property name="ObjectShortName">SDO4</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/nCNV" type="logic">
+      <obj_property name="ElementShortName">nCNV</obj_property>
+      <obj_property name="ObjectShortName">nCNV</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/SCK" type="logic">
+      <obj_property name="ElementShortName">SCK</obj_property>
+      <obj_property name="ObjectShortName">SCK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/expected_ch1" type="array">
+      <obj_property name="ElementShortName">expected_ch1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_ch1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/expected_ch2" type="array">
+      <obj_property name="ElementShortName">expected_ch2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_ch2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/expected_ch3" type="array">
+      <obj_property name="ElementShortName">expected_ch3[15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_ch3[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/expected_ch4" type="array">
+      <obj_property name="ElementShortName">expected_ch4[15:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_ch4[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/test_cycle_cnt" type="array">
+      <obj_property name="ElementShortName">test_cycle_cnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">test_cycle_cnt[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_ltc2324_core/adc_shift_reg" type="array">
+      <obj_property name="ElementShortName">adc_shift_reg[1:4][15:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_shift_reg[1:4][15:0]</obj_property>
+   </wvobject>
+</wave_config>

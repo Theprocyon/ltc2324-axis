@@ -137,18 +137,29 @@ logic sck_en_reg;
     );
 // ====== receive data from SDO pins ======
 
-always_ff @(posedge CLKOUT or negedge rst_n) begin : SDO_Shift_Register
+logic [15:0] shift_ch1, shift_ch2, shift_ch3, shift_ch4;
+
+always_ff @(posedge CLKOUT) begin
+    shift_ch1 <= {shift_ch1[14:0], SDO1};
+    shift_ch2 <= {shift_ch2[14:0], SDO2};
+    shift_ch3 <= {shift_ch3[14:0], SDO3};
+    shift_ch4 <= {shift_ch4[14:0], SDO4};
+end
+
+// ====== update synchronous ==============
+
+always_ff @(posedge clk or negedge rst_n) begin : SDO_Shift_Register
     if (!rst_n) begin
         ch1 <= 16'd0;
         ch2 <= 16'd0;
         ch3 <= 16'd0;
         ch4 <= 16'd0;
     end else begin
-        if (state == ACQUIRE || state == DSCKHCNVH) begin
-            ch1 <= {ch1[14:0], SDO1};
-            ch2 <= {ch2[14:0], SDO2};
-            ch3 <= {ch3[14:0], SDO3};
-            ch4 <= {ch4[14:0], SDO4};
+        if (state == DSCKHCNVH && tdsckhcnvh_clk_cnt == 1) begin
+            ch1 <= shift_ch1;
+            ch2 <= shift_ch2;
+            ch3 <= shift_ch3;
+            ch4 <= shift_ch4;
         end
     end
 end
