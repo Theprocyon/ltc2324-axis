@@ -111,12 +111,30 @@ end
 
 // ====== Output assignment ======
 assign nCNV = state == START;
-assign SCK = (state == ACQUIRE) ? clk : 1'b0;
-
 // Although LTC2324 datasheet specifies tDSCKHCNVH as 0ns, the DSCKHCNVH state is added to address CLK-CLKOUT round trip delay to ensure acquisition.
-
 assign valid = (state == DSCKHCNVH) && (tdsckhcnvh_clk_cnt == TDSCKHCNVH_CLK_MAX);
 
+
+//assign SCK = (state == ACQUIRE) ? clk : 1'b0;
+logic sck_en_reg;
+    always_ff @(posedge clk or negedge rst_n) begin
+        if(!rst_n) sck_en_reg <= 0;
+        else       sck_en_reg <= (state == ACQUIRE); 
+    end
+
+    ODDR #(
+        .DDR_CLK_EDGE("OPPOSITE_EDGE"),
+        .INIT(1'b0),
+        .SRTYPE("SYNC")
+    ) u_sck_gen (
+        .Q(SCK),
+        .C(clk),
+        .CE(1'b1),
+        .D1(sck_en_reg),
+        .D2(1'b0),
+        .R(~rst_n),
+        .S(1'b0)
+    );
 // ====== receive data from SDO pins ======
 
 always_ff @(posedge CLKOUT or negedge rst_n) begin : SDO_Shift_Register

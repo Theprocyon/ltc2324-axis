@@ -46,7 +46,7 @@ module tb_ltc2324_core;
 
     // SCK to CLKOUT Delay max 4.5ns
     always @(SCK) begin
-        CLKOUT <= #6ns SCK; 
+        CLKOUT <= #5ns SCK; 
     end
 
     // 3-2. Analog Sample & Data Shift Logic
@@ -54,7 +54,8 @@ module tb_ltc2324_core;
 
 
     always @(negedge nCNV) begin
-
+        if ($time > 10) begin
+        
         adc_shift_reg[1] = $random;
         adc_shift_reg[2] = $random;
         adc_shift_reg[3] = $random;
@@ -68,9 +69,21 @@ module tb_ltc2324_core;
         
         $display("[Virtual ADC] Sampled New Analog Data: %h, %h, %h, %h", 
                  adc_shift_reg[1], adc_shift_reg[2], adc_shift_reg[3], adc_shift_reg[4]);
+            
+            #220ns
+            
+            SDO1 <= adc_shift_reg[1][15];
+            SDO2 <= adc_shift_reg[2][15];
+            SDO3 <= adc_shift_reg[3][15];
+            SDO4 <= adc_shift_reg[4][15];
+            adc_shift_reg[1] <= {adc_shift_reg[1][14:0], 1'b0};
+            adc_shift_reg[2] <= {adc_shift_reg[2][14:0], 1'b0};
+            adc_shift_reg[3] <= {adc_shift_reg[3][14:0], 1'b0};
+            adc_shift_reg[4] <= {adc_shift_reg[4][14:0], 1'b0};
+        end
     end
 
-    always @(negedge SCK) begin
+    always @(negedge CLKOUT) begin
         if (nCNV == 0) begin
             SDO1 <= adc_shift_reg[1][15];
             SDO2 <= adc_shift_reg[2][15];
@@ -120,7 +133,7 @@ module tb_ltc2324_core;
             start = 1;
             @(posedge clk);
             start = 0;
-
+            
             fork 
                 begin
                     wait(valid);
