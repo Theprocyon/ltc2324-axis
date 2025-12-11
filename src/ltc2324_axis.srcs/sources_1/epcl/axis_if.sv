@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 interface axis_if #(
-    parameter DATA_WIDTH = 32
+    parameter DATA_WIDTH = 16
 );
     logic [DATA_WIDTH-1:0] tdata;
     logic                  tvalid;
