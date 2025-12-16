@@ -22,22 +22,37 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module ltc2324_axis(
-    input clk,
-    input rst_n,
-    input start,
+    input wire clk,
+    input wire rst_n,
+    input wire start,
     
-    axis_if.master ch1_axis,
-    axis_if.master ch2_axis,
-    axis_if.master ch3_axis,
-    axis_if.master ch4_axis,
+    // Channel 1
+    output wire [15:0] ch1_axis_tdata,
+    output wire        ch1_axis_tvalid,
+    input  wire        ch1_axis_tready,
     
-    input CLKOUT,
-    input SDO1,
-    input SDO2,
-    input SDO3,
-    input SDO4,
-    output nCNV,
-    output SCK
+    // Channel 2
+    output wire [15:0] ch2_axis_tdata,
+    output wire        ch2_axis_tvalid,
+    input  wire        ch2_axis_tready,
+    
+    // Channel 3
+    output wire [15:0] ch3_axis_tdata,
+    output wire        ch3_axis_tvalid,
+    input  wire        ch3_axis_tready,
+    
+    // Channel 4
+    output wire [15:0] ch4_axis_tdata,
+    output wire        ch4_axis_tvalid,
+    input  wire        ch4_axis_tready,
+    
+    input wire CLKOUT,
+    input wire SDO1,
+    input wire SDO2,
+    input wire SDO3,
+    input wire SDO4,
+    output wire nCNV,
+    output wire SCK
 );
 
     logic core_valid;
@@ -65,7 +80,6 @@ module ltc2324_axis(
     );
 
     // ====== 4-depth FIFOs for each channel ======
-    
     axis_fifo #(
         .DATA_WIDTH(16),
         .DEPTH(4)
@@ -74,9 +88,9 @@ module ltc2324_axis(
         .rst_n(rst_n),
         .wr_en(core_valid),
         .wr_data(core_ch1),
-        .rd_en(ch1_axis.tready & ch1_axis.tvalid),
-        .rd_data(ch1_axis.tdata),
-        .valid(ch1_axis.tvalid),
+        .rd_en(ch1_axis_tready & ch1_axis_tvalid), 
+        .rd_data(ch1_axis_tdata),
+        .valid(ch1_axis_tvalid),
         .full(),
         .empty()
     );
@@ -89,9 +103,9 @@ module ltc2324_axis(
         .rst_n(rst_n),
         .wr_en(core_valid),
         .wr_data(core_ch2),
-        .rd_en(ch2_axis.tready & ch2_axis.tvalid),
-        .rd_data(ch2_axis.tdata),
-        .valid(ch2_axis.tvalid),
+        .rd_en(ch2_axis_tready & ch2_axis_tvalid),
+        .rd_data(ch2_axis_tdata),
+        .valid(ch2_axis_tvalid),
         .full(),
         .empty()
     );
@@ -104,9 +118,9 @@ module ltc2324_axis(
         .rst_n(rst_n),
         .wr_en(core_valid),
         .wr_data(core_ch3),
-        .rd_en(ch3_axis.tready & ch3_axis.tvalid),
-        .rd_data(ch3_axis.tdata),
-        .valid(ch3_axis.tvalid),
+        .rd_en(ch3_axis_tready & ch3_axis_tvalid),
+        .rd_data(ch3_axis_tdata),
+        .valid(ch3_axis_tvalid),
         .full(),
         .empty()
     );
@@ -119,12 +133,11 @@ module ltc2324_axis(
         .rst_n(rst_n),
         .wr_en(core_valid),
         .wr_data(core_ch4),
-        .rd_en(ch4_axis.tready & ch4_axis.tvalid),
-        .rd_data(ch4_axis.tdata),
-        .valid(ch4_axis.tvalid),
+        .rd_en(ch4_axis_tready & ch4_axis_tvalid),
+        .rd_data(ch4_axis_tdata),
+        .valid(ch4_axis_tvalid),
         .full(),
         .empty()
     );
 
 endmodule
-
